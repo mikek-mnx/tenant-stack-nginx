@@ -1,0 +1,14 @@
+{
+  "name": "tenant-stack-nginx",
+  "version": "1.0.0",
+  "description": "Per-tenant hello-world nginx provisioned by the sigilvault subscription controller.",
+  "main": "index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@pulumi/pulumi": "^3.0.0",
+    "@pulumi/kubernetes": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20"
+  }
+}

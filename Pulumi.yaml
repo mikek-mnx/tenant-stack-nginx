@@ -1,0 +1,13 @@
+name: tenant-stack-nginx
+runtime: nodejs
+description: >-
+  Per-tenant hello-world nginx, deployed by the sigilvault subscription
+  controller via the Pulumi Kubernetes Operator. Serves a page that echoes
+  the tenant id.
+config:
+  tenant-stack-nginx:tenantId:
+    type: string
+    description: The subscription tenant id (echoed by nginx).
+  tenant-stack-nginx:targetNamespace:
+    type: string
+    description: Namespace the controller created for this tenant; resources land here.

@@ -6,9 +6,13 @@ const cfg = new pulumi.Config();
 const tenantId = cfg.require("tenantId");
 const targetNamespace = cfg.require("targetNamespace");
 
+// Labels are for selection only — they must be valid label values, so the
+// opaque tenant id (which may contain '/', etc.) goes in an annotation.
 const labels = {
     "app.kubernetes.io/name": "tenant-nginx",
     "app.kubernetes.io/managed-by": "sigilvault",
+};
+const annotations = {
     "sigilvault.xyz/tenant-id": tenantId,
 };
 
@@ -22,14 +26,14 @@ const indexHtml = `<!doctype html>
 `;
 
 const content = new k8s.core.v1.ConfigMap("nginx-index", {
-    metadata: { namespace: targetNamespace, labels },
+    metadata: { namespace: targetNamespace, labels, annotations },
     data: { "index.html": indexHtml },
 });
 
 const appLabels = { ...labels, app: "tenant-nginx" };
 
 const deployment = new k8s.apps.v1.Deployment("tenant-nginx", {
-    metadata: { namespace: targetNamespace, labels },
+    metadata: { namespace: targetNamespace, labels, annotations },
     spec: {
         replicas: 1,
         selector: { matchLabels: { app: "tenant-nginx" } },
@@ -60,7 +64,7 @@ const deployment = new k8s.apps.v1.Deployment("tenant-nginx", {
 });
 
 const service = new k8s.core.v1.Service("tenant-nginx", {
-    metadata: { namespace: targetNamespace, labels },
+    metadata: { namespace: targetNamespace, labels, annotations },
     spec: {
         selector: { app: "tenant-nginx" },
         ports: [{ name: "http", port: 80, targetPort: 80 }],

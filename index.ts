@@ -14,6 +14,11 @@ const labels = {
 };
 const annotations = {
     "sigilvault.xyz/tenant-id": tenantId,
+    // The controller owns real readiness/status (rustcontroller task #15);
+    // we don't need the pulumi-kubernetes provider's own await gating, which
+    // hangs in this restricted in-cluster setup. Resources are still created
+    // normally; `up` just returns once the API server accepts them.
+    "pulumi.com/skipAwait": "true",
 };
 
 // The page nginx serves — echoes the tenant id so the pipeline is visibly
